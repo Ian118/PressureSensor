@@ -14,7 +14,7 @@ struct {
   uint16_t crc;
 } __attribute__((packed)) packet;
 
-uint16_t calculateCRC() {
+void calculateCRC() {
   constexpr size_t length{sizeof(packet) - sizeof(packet.startingBit) -
                           sizeof(packet.crc)};
   uint8_t *data{(uint8_t *)&packet + sizeof(packet.startingBit)};
@@ -26,11 +26,12 @@ uint16_t calculateCRC() {
     crc ^= crc << 12;
     crc ^= (crc & 0x00ff) << 5;
   }
-  return crc;
+  packet.crc = crc;
 }
 
 void setup() {
   SerialBT.begin("PressureSensor");
+  Serial.begin(115200);
   if (!mpr.begin()) {
     delay(1000);
     return;
@@ -40,9 +41,9 @@ void setup() {
 }
 
 void loop() {
-  // Serial.printf("%.2f V\n", analogReadMilliVolts(A13) * 0.002f);
+  // Serial.Serial.printf("%.2f V\n", analogReadMilliVolts(A13) * 0.002f);
   packet.pressure = mpr.readPressure();
-  packet.crc = calculateCRC();
+  calculateCRC();
   Serial.write((uint8_t *)&packet, sizeof(packet));
 
   SerialBT.println((packet.pressure - 100.0) * KPA_to_PSI);  // pressure in psi
