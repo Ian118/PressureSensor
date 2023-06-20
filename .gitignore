@@ -2,4 +2,5 @@
 build
 
 # Visual Studio Code
-.vscode
+.vscode/*
+!.vscode/arduino.json
