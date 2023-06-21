@@ -48,8 +48,6 @@ void loop() {
   calculateCRC();
   Serial.write((uint8_t *)&packet, sizeof(packet));
 
-  // Serial.printf("%d\n", calculateCRC2());
-
   // SerialBT.println((packet.pressure - 100.0) * KPA_to_PSI);  // pressure
   // in psi
   delay(5);
